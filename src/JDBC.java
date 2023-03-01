@@ -14,22 +14,22 @@ public class JDBC {
             );
             System.out.println("Zadej IP adresu");
             Scanner scan = new Scanner(System.in);
-            String ip = scan.nextLine() ;
+            String ip = scan.nextLine() ; // input
 
-            String[] ipMod = ip.split("[.]", 0);;
+            String[] ipMod = ip.split("[.]", 0);; // splitování inputu na tečce
             int ip1 = Integer.parseInt(ipMod [0]);
             int ip2 = Integer.parseInt(ipMod [1]);
             int ip3 =Integer.parseInt(ipMod [2]);
-            int ip4 = Integer.parseInt(ipMod [3]);
+            int ip4 = Integer.parseInt(ipMod [3]);// parsování inputu z arraye do integeru
             String query = "SELECT ipp.city FROM dbip_lookup_educa_modified as ipp WHERE ipp.ip_start1 = "+ip1+" AND ipp.ip_start2 = "+ip2+" AND "+ip3+" BETWEEN ipp.ip_start3 AND ipp.ip_end3 AND "+ip4+" BETWEEN ipp.ip_start4 AND ipp.ip_end4;"; //query
-            Statement statement = connection.createStatement();
+            Statement statement = connection.createStatement(); //připojení k DB
             long clock1 = System.nanoTime();
-            ResultSet resultSet = statement.executeQuery(query);
+            ResultSet resultSet = statement.executeQuery(query); // execute queriny
             long clock2 = System.nanoTime();
             while (resultSet.next()) {
                 System.out.println(resultSet.getString(1)); //vypsání výsledku
                long Res1 = clock2 - clock1;
-                System.out.println(Res1/100000 + " ms");
+                System.out.println(Res1/100000 + " ms"); // převod z nanosekund na milisekundy
             }
             connection.close(); // konec připojení
         } catch (Exception e) {
