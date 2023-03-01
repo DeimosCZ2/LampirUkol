@@ -29,7 +29,7 @@ public class JDBC {
             while (resultSet.next()) {
                 System.out.println(resultSet.getString(1)); //vypsání výsledku
                long Res1 = clock2 - clock1;
-                System.out.println(Res1 + " ns");
+                System.out.println(Res1/100000 + " ms");
             }
             connection.close(); // konec připojení
         } catch (Exception e) {
