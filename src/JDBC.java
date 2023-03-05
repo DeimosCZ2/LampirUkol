@@ -1,6 +1,7 @@
 import java.io.*;
 import java.sql.*;
 import java.util.Scanner; //import věcí
+import java.math.*;
 public class JDBC {
     public static void main(String[] args) {
         try {
@@ -9,27 +10,32 @@ public class JDBC {
 
 
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection( // připojení k driveru
-                    "jdbc:mysql://localhost:3306/lampukol", "root", "" //připojení k DB a přihlášení rootu
+            Connection connection = DriverManager.getConnection( // připojení
+                    "jdbc:mysql://localhost:3306/jdbclampukol", "root", "" //připojení k DB a přihlášení rootu
             );
             System.out.println("Zadej IP adresu");
             Scanner scan = new Scanner(System.in);
-            String ip = scan.nextLine() ; // input
+            String ip = scan.nextLine() ;
 
-            String[] ipMod = ip.split("[.]", 0);; // splitování inputu na tečce
-            int ip1 = Integer.parseInt(ipMod [0]);
-            int ip2 = Integer.parseInt(ipMod [1]);
-            int ip3 =Integer.parseInt(ipMod [2]);
-            int ip4 = Integer.parseInt(ipMod [3]);// parsování inputu z arraye do integeru
-            String query = "SELECT ipp.city FROM dbip_lookup_educa_modified as ipp WHERE ipp.ip_start1 = "+ip1+" AND ipp.ip_start2 = "+ip2+" AND "+ip3+" BETWEEN ipp.ip_start3 AND ipp.ip_end3 AND "+ip4+" BETWEEN ipp.ip_start4 AND ipp.ip_end4;"; //query
-            Statement statement = connection.createStatement(); //připojení k DB
+      /*    String[] ipMod = ip.split("[.]", 0);;
+            long ip1 = Integer.parseInt(ipMod [0]);
+            long ip2 = Integer.parseInt(ipMod [1]);
+            long ip3 =Integer.parseInt(ipMod [2]);
+            long ip4 = Integer.parseInt(ipMod [3]);
+            long inetIp = ip1* (1<<24) + ip2* (1<<16) + ip3* (1<<8) + ip4;
+            System.out.println(inetIp);*/
+
+            String query = "SELECT city FROM dbip_lookup_educa_modified_iii where inet_aton('"+ip+"') >= ip_startM order by ip_startM desc limit 1;";
             long clock1 = System.nanoTime();
-            ResultSet resultSet = statement.executeQuery(query); // execute queriny
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
             long clock2 = System.nanoTime();
             while (resultSet.next()) {
                 System.out.println(resultSet.getString(1)); //vypsání výsledku
+
                long Res1 = clock2 - clock1;
-                System.out.println(Res1/100000 + " ms"); // převod z nanosekund na milisekundy
+                System.out.println(Res1/1000000 + " ms");
+
             }
             connection.close(); // konec připojení
         } catch (Exception e) {
